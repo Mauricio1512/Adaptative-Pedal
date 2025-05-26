@@ -1,0 +1,928 @@
+[
+    {
+        "id": "58479f4b10d10829",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "bc1a16dc34132611",
+        "type": "mqtt out",
+        "z": "58479f4b10d10829",
+        "name": "",
+        "topic": "adaptative-pedal/settings",
+        "qos": "2",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "65196983ccd465ce",
+        "x": 610,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "5fb53ca7f6eb4351",
+        "type": "ui_text_input",
+        "z": "58479f4b10d10829",
+        "name": "",
+        "label": "",
+        "tooltip": "Rango(20~100)",
+        "group": "4478e5a5c88821a9",
+        "order": 1,
+        "width": 6,
+        "height": 1,
+        "passthru": false,
+        "mode": "number",
+        "delay": 300,
+        "topic": "adaptative-pedal/settings",
+        "sendOnBlur": false,
+        "className": "",
+        "topicType": "msg",
+        "x": 230,
+        "y": 240,
+        "wires": [
+            [
+                "58030a011b0b3a45"
+            ]
+        ]
+    },
+    {
+        "id": "58030a011b0b3a45",
+        "type": "function",
+        "z": "58479f4b10d10829",
+        "name": "function 1",
+        "func": "// Asegurar tipo numérico\nlet value = Number(msg.payload);\n\nif (isNaN(value)) {\n    // Mensaje de error general\n    return [\n        { payload: \"Por favor ingrese un número válido.\" },\n        null\n    ];\n}\n\nif (value < 20 || value > 100) {\n    // Fuera de rango → alerta\n    return [\n        { payload: `Valor fuera de rango: ${value}. Debe estar entre 20 y 100.` },\n        null\n    ];\n} else {\n    // Dentro de rango → acción\n    return [\n        null,\n        {\n            payload: {\n                action: \"CHANGE_THRESHOLD\",\n                value: value\n            }\n        }\n    ];\n}",
+        "outputs": 2,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 380,
+        "y": 240,
+        "wires": [
+            [
+                "992a5724776c835a"
+            ],
+            [
+                "bc1a16dc34132611",
+                "func_acknowledge"
+            ]
+        ]
+    },
+    {
+        "id": "992a5724776c835a",
+        "type": "ui_toast",
+        "z": "58479f4b10d10829",
+        "position": "top right",
+        "displayTime": "5",
+        "highlight": "",
+        "outputs": 0,
+        "ok": "Aceptar",
+        "cancel": "",
+        "topic": "",
+        "name": "",
+        "x": 590,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "func_acknowledge",
+        "type": "function",
+        "z": "58479f4b10d10829",
+        "name": "Enviar confirmación",
+        "func": "// Procesa solo si msg.payload tiene valor\nif (msg.payload !== undefined && msg.payload !== null) {\n    // Salida 1: mensaje de confirmación\n    return [\n        { payload: \"Enviado correctamente\" },\n        null\n    ];\n}\n\n// Si no hay payload válido, no emite nada\nreturn null;\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 610,
+        "y": 220,
+        "wires": [
+            [
+                "57cec53a080df7b4"
+            ]
+        ]
+    },
+    {
+        "id": "57cec53a080df7b4",
+        "type": "ui_toast",
+        "z": "58479f4b10d10829",
+        "position": "top right",
+        "displayTime": "5",
+        "highlight": "",
+        "sendall": true,
+        "outputs": 0,
+        "ok": "Aceptar",
+        "cancel": "",
+        "raw": false,
+        "className": "",
+        "topic": "",
+        "name": "",
+        "x": 870,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "0f8787a60af04b4d",
+        "type": "mqtt in",
+        "z": "58479f4b10d10829",
+        "name": "",
+        "topic": "adaptative-pedal/sustain",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "65196983ccd465ce",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 310,
+        "y": 340,
+        "wires": [
+            [
+                "3ec4f93d629a4adc",
+                "4c2bc9870759eb27"
+            ]
+        ]
+    },
+    {
+        "id": "2364e2a27c2843d6",
+        "type": "mqtt in",
+        "z": "58479f4b10d10829",
+        "name": "",
+        "topic": "adaptative-pedal/sostenuto",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "65196983ccd465ce",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 310,
+        "y": 380,
+        "wires": [
+            [
+                "eb0dc8acfd7e44cf",
+                "13b95e147e66f23b"
+            ]
+        ]
+    },
+    {
+        "id": "8af287465cf6460a",
+        "type": "mqtt in",
+        "z": "58479f4b10d10829",
+        "name": "",
+        "topic": "adaptative-pedal/celestina",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "65196983ccd465ce",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 310,
+        "y": 420,
+        "wires": [
+            [
+                "4277dceea113f60c",
+                "f0186c35c83837a6"
+            ]
+        ]
+    },
+    {
+        "id": "4c2bc9870759eb27",
+        "type": "debug",
+        "z": "58479f4b10d10829",
+        "name": "debug 17",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 680,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "13b95e147e66f23b",
+        "type": "debug",
+        "z": "58479f4b10d10829",
+        "name": "debug 18",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 680,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "f0186c35c83837a6",
+        "type": "debug",
+        "z": "58479f4b10d10829",
+        "name": "debug 19",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 680,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "a7105e94bf3aabf8",
+        "type": "ui_switch",
+        "z": "58479f4b10d10829",
+        "name": "",
+        "label": "Modo de Piano",
+        "tooltip": "off = Acústico, on = Digital",
+        "group": "6999a5aa06ee14cd",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "decouple": "false",
+        "topic": "adaptative-pedal/toggle-piano",
+        "topicType": "msg",
+        "style": "",
+        "onvalue": "TOGGLE_DIGITAL",
+        "onvalueType": "str",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "TOGGLE_Acústico",
+        "offvalueType": "str",
+        "officon": "",
+        "offcolor": "",
+        "animate": false,
+        "className": "",
+        "x": 460,
+        "y": 580,
+        "wires": [
+            [
+                "ac0b7f50c9d8f232",
+                "df35b7409fc5dcd5"
+            ]
+        ]
+    },
+    {
+        "id": "d3eed90be2f278b0",
+        "type": "inject",
+        "z": "58479f4b10d10829",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "0",
+        "topic": "",
+        "payload": "TOGGLE_DIGITAL",
+        "payloadType": "str",
+        "x": 250,
+        "y": 580,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "03ac3b67d9e0da1c",
+        "type": "mqtt out",
+        "z": "58479f4b10d10829",
+        "name": "",
+        "topic": "adaptative-pedal/toggle-piano",
+        "qos": "2",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "65196983ccd465ce",
+        "x": 930,
+        "y": 580,
+        "wires": []
+    },
+    {
+        "id": "0c4830fd7c973665",
+        "type": "debug",
+        "z": "58479f4b10d10829",
+        "name": "debug 20",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 860,
+        "y": 640,
+        "wires": []
+    },
+    {
+        "id": "ac0b7f50c9d8f232",
+        "type": "function",
+        "z": "58479f4b10d10829",
+        "name": "Generar Notificación",
+        "func": "let modo = msg.payload === \"TOGGLE_DIGITAL\" ? \"Digital\" : \"Acústico\";\nmsg.payload = \"Modo \" + modo;\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 680,
+        "y": 540,
+        "wires": [
+            [
+                "b96d62fa78046948"
+            ]
+        ]
+    },
+    {
+        "id": "b96d62fa78046948",
+        "type": "ui_toast",
+        "z": "58479f4b10d10829",
+        "position": "top right",
+        "displayTime": "3",
+        "highlight": "",
+        "sendall": true,
+        "outputs": 0,
+        "ok": "OK",
+        "cancel": "",
+        "raw": false,
+        "className": "",
+        "topic": "",
+        "name": "Notificación de Modo",
+        "x": 920,
+        "y": 540,
+        "wires": []
+    },
+    {
+        "id": "df35b7409fc5dcd5",
+        "type": "function",
+        "z": "58479f4b10d10829",
+        "name": "function 2",
+        "func": "if (msg.payload == \"TOGGLE_Acústico\" || msg.payload == \"TOGGLE_DIGITAL\"  && msg.payload !== null) {\n    // Salida 1: mensaje de confirmación\n    return [\n        { payload: \"TOGGLE_DIGITAL\" },\n        null\n    ];\n}\n\n// Si no hay payload válido, no emite nada\nreturn null;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 680,
+        "y": 580,
+        "wires": [
+            [
+                "03ac3b67d9e0da1c",
+                "0c4830fd7c973665"
+            ]
+        ]
+    },
+    {
+        "id": "e637c0cb2054ca3e",
+        "type": "ui_template",
+        "z": "58479f4b10d10829",
+        "group": "",
+        "name": "",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "format": "<head>\n<link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">\n<link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin>\n<linkhref=\"https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap\" rel=\"stylesheet\">\n\n    <style>\n        /* Desactivar selección de texto y scroll táctil */\n        :root,\n        a,\n        button,\n        p,\n        div {\n            -webkit-user-select: none !important;\n        }\n\n        body {\n            background: linear-gradient(55deg, #009785 0%, #245aa5 50%, #b800e9 100%);\n            -webkit-touch-callout: none !important;\n            font-family: \"Inter\", sans-serif;\n            margin: 0;\n        }\n\n        h1{\n            font-family: \"Inter\", sans-serif;\n        }\n        span{\n            font-family: \"Inter\", sans-serif;\n        }\n        p{\n            font-family: \"Inter\", sans-serif;\n        }\n        /* Toolbar y tarjetas transparentes */\n        body.nr-dashboard-theme md-toolbar,\n        body.nr-dashboard-theme md-content md-card {\n            background: transparent !important;\n            color: #FFF;\n        }\n\n        /* Paneles con mayor claridad y sombra */\n        ui-card-panel,\n        .nr-dashboard-cardpanel layout-column {\n            background-color: rgba(255, 255, 255, 0.15) !important;\n            border-radius: 12px !important;\n            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);\n            padding: 0.01rem;\n            margin: 10px;\n            transition: background-color 0.3s ease;\n        }\n\n        /* Al pasar el ratón sobre el panel */\n        ui-card-panel:hover {\n            background-color: rgba(255, 255, 255, 0.25) !important;\n        }\n\n        /* Navegación */\n        #Homey_Dashboard_Navigation {\n            background-color: rgba(255, 255, 255, 0.1) !important;\n            border-radius: 12px !important;\n            padding: 0.05rem;\n        }\n\n        /* Titulares más llamativos */\n        .nr-dashboard-theme ui-card-panel p.nr-dashboard-cardtitle {\n            font-family: \"Inter\", sans-serif;\n            font-size: 1.4rem;\n            font-weight: 600;\n            text-transform: uppercase;\n            letter-spacing: 0.05em;\n            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);\n            color: #FFF;\n            margin-bottom: 0.5rem;\n        }\n\n        /* Botones */\n        .nr-dashboard-theme .nr-dashboard-button .md-button,\n        .md-button {\n            background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.1));\n            border-radius: 8px;\n            padding: 0.6rem 1.2rem;\n            font-family: \"Inter\", sans-serif;\n            font-size: 1rem;\n            font-weight: 500;\n            color: #FFF;\n            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.4);\n            transition: background 0.3s ease, transform 0.1s ease;\n            border: none;\n            cursor: pointer;\n        }\n\n        /* Hover y foco de botones */\n        .nr-dashboard-theme .nr-dashboard-button .md-button:hover,\n        .md-button:hover,\n        .nr-dashboard-switch.ng-scope:hover {\n            background: rgba(255, 255, 255, 0.4) !important;\n            transform: translateY(-2px);\n        }\n\n        .nr-dashboard-theme .nr-dashboard-button .md-button:active,\n        .md-button:active {\n            transform: translateY(0);\n        }\n\n        /* Switches más visibles */\n        .nr-dashboard-switch.ng-scope {\n            background-color: rgba(255, 255, 255, 0.25) !important;\n            transition: background-color 0.3s ease;\n        }\n\n        /* Quitar bordes innecesarios */\n        .nr-dashboard-theme ui-card-panel,\n        .nr-dashboard-theme md-content md-card {\n            border: none;\n        }\n\n        /* Evitar scroll interno */\n        .nr-dashboard-template {\n            overflow-y: visible;\n        }\n    </style>\n</head>\n\n<body>\n    <!-- Aquí iría tu contenido del dashboard -->\n</body>\n\n<script>\n    document.ontouchmove = function(e) {\n    e.preventDefault();\n  };\n</script>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": true,
+        "templateScope": "global",
+        "className": "",
+        "x": 300,
+        "y": 780,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "9abb2a7bbbcf2efa",
+        "type": "ui_button",
+        "z": "58479f4b10d10829",
+        "name": "",
+        "group": "6999a5aa06ee14cd",
+        "order": 2,
+        "width": 6,
+        "height": 1,
+        "passthru": true,
+        "label": "Reset",
+        "tooltip": "Volver al modo Default",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "{\"action\":\"DEFAULT_THRESHOLD\"}",
+        "payloadType": "str",
+        "topic": "adaptative-pedal/settings",
+        "topicType": "msg",
+        "x": 595,
+        "y": 820,
+        "wires": [
+            [
+                "0df68c8ea1e6266c",
+                "d5c76fe6e46010d0"
+            ]
+        ]
+    },
+    {
+        "id": "0b0c6021ca05652e",
+        "type": "ui_button",
+        "z": "58479f4b10d10829",
+        "name": "",
+        "group": "6999a5aa06ee14cd",
+        "order": 3,
+        "width": 6,
+        "height": 1,
+        "passthru": true,
+        "label": "Calibrar",
+        "tooltip": "",
+        "payload": "{\"action\":\"CALIBRATE\"}",
+        "payloadType": "str",
+        "topic": "adaptative-pedal/settings",
+        "topicType": "msg",
+        "x": 605,
+        "y": 860,
+        "wires": [
+            [
+                "26bef27c2c036c81",
+                "59574a6249112df9"
+            ]
+        ]
+    },
+    {
+        "id": "0df68c8ea1e6266c",
+        "type": "link out",
+        "z": "58479f4b10d10829",
+        "name": "enviar reset",
+        "links": [
+            "32cf23d87879b9ea"
+        ],
+        "x": 805,
+        "y": 800,
+        "wires": []
+    },
+    {
+        "id": "26bef27c2c036c81",
+        "type": "link out",
+        "z": "58479f4b10d10829",
+        "name": "enviar calibrar",
+        "links": [
+            "32cf23d87879b9ea"
+        ],
+        "x": 805,
+        "y": 860,
+        "wires": []
+    },
+    {
+        "id": "32cf23d87879b9ea",
+        "type": "mqtt out",
+        "z": "58479f4b10d10829",
+        "name": "",
+        "topic": "adaptative-pedal/settings",
+        "qos": "2",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "65196983ccd465ce",
+        "x": 1030,
+        "y": 820,
+        "wires": []
+    },
+    {
+        "id": "d5c76fe6e46010d0",
+        "type": "link in",
+        "z": "58479f4b10d10829",
+        "name": "trigger notify reset",
+        "links": [
+            "9abb2a7bbbcf2efa"
+        ],
+        "x": 665,
+        "y": 760,
+        "wires": [
+            [
+                "ea931383e9690c00"
+            ]
+        ]
+    },
+    {
+        "id": "59574a6249112df9",
+        "type": "link in",
+        "z": "58479f4b10d10829",
+        "name": "trigger notify calibrate",
+        "links": [
+            "0b0c6021ca05652e"
+        ],
+        "x": 715,
+        "y": 920,
+        "wires": [
+            [
+                "c95374881bac7ee9"
+            ]
+        ]
+    },
+    {
+        "id": "ea931383e9690c00",
+        "type": "function",
+        "z": "58479f4b10d10829",
+        "name": "Texto Reset",
+        "func": "msg.payload = \"Reseteo exitoso\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 815,
+        "y": 760,
+        "wires": [
+            [
+                "a30a5aedd928622c"
+            ]
+        ]
+    },
+    {
+        "id": "c95374881bac7ee9",
+        "type": "function",
+        "z": "58479f4b10d10829",
+        "name": "Texto Calibrar",
+        "func": "msg.payload = \"Calibración iniciada\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 840,
+        "y": 920,
+        "wires": [
+            [
+                "a30a5aedd928622c"
+            ]
+        ]
+    },
+    {
+        "id": "a30a5aedd928622c",
+        "type": "ui_toast",
+        "z": "58479f4b10d10829",
+        "position": "top right",
+        "displayTime": "3",
+        "highlight": "",
+        "outputs": 0,
+        "ok": "OK",
+        "topic": "",
+        "name": "",
+        "x": 1015,
+        "y": 860,
+        "wires": []
+    },
+    {
+        "id": "2ba8eb08be60fadc",
+        "type": "mqtt in",
+        "z": "58479f4b10d10829",
+        "name": "",
+        "topic": "adaptative-pedal/settings",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "65196983ccd465ce",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 250,
+        "y": 980,
+        "wires": [
+            [
+                "8437f8e934c5eddd"
+            ]
+        ]
+    },
+    {
+        "id": "8437f8e934c5eddd",
+        "type": "debug",
+        "z": "58479f4b10d10829",
+        "name": "debug 21",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 450,
+        "y": 980,
+        "wires": []
+    },
+    {
+        "id": "3ec4f93d629a4adc",
+        "type": "ui_led2",
+        "z": "58479f4b10d10829",
+        "order": 7,
+        "group": "61b0885aacd87a1a",
+        "width": 4,
+        "height": 2,
+        "label": "Pedal Sustain ",
+        "property": "payload",
+        "labelPlacement": "left",
+        "labelAlignment": "left",
+        "colorForValue": [
+            {
+                "color": "#ff0000",
+                "value": "false",
+                "valueType": "bool"
+            },
+            {
+                "color": "#008000",
+                "value": "true",
+                "valueType": "bool"
+            }
+        ],
+        "allowColorForValueInMessage": false,
+        "shape": "circle",
+        "showGlow": true,
+        "name": "",
+        "x": 550,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "eb0dc8acfd7e44cf",
+        "type": "ui_led2",
+        "z": "58479f4b10d10829",
+        "order": 2,
+        "group": "61b0885aacd87a1a",
+        "width": 4,
+        "height": 2,
+        "label": "Pedal Sustenuto ",
+        "property": "payload",
+        "labelPlacement": "left",
+        "labelAlignment": "left",
+        "colorForValue": [
+            {
+                "color": "#ff0000",
+                "value": "false",
+                "valueType": "bool"
+            },
+            {
+                "color": "#008000",
+                "value": "true",
+                "valueType": "bool"
+            }
+        ],
+        "allowColorForValueInMessage": false,
+        "shape": "circle",
+        "showGlow": true,
+        "name": "",
+        "x": 550,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "4277dceea113f60c",
+        "type": "ui_led2",
+        "z": "58479f4b10d10829",
+        "order": 12,
+        "group": "61b0885aacd87a1a",
+        "width": 4,
+        "height": 2,
+        "label": "Pedal Celestina",
+        "property": "payload",
+        "labelPlacement": "left",
+        "labelAlignment": "left",
+        "colorForValue": [
+            {
+                "color": "#ff0000",
+                "value": "false",
+                "valueType": "bool"
+            },
+            {
+                "color": "#008000",
+                "value": "true",
+                "valueType": "bool"
+            }
+        ],
+        "allowColorForValueInMessage": false,
+        "shape": "circle",
+        "showGlow": true,
+        "name": "",
+        "x": 550,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "1d9f7aecdc65b516",
+        "type": "ui_spacer",
+        "z": "58479f4b10d10829",
+        "name": "spacer",
+        "group": "61b0885aacd87a1a",
+        "order": 1,
+        "width": 1,
+        "height": 1
+    },
+    {
+        "id": "7e7467aa18382de6",
+        "type": "ui_spacer",
+        "z": "58479f4b10d10829",
+        "name": "spacer",
+        "group": "61b0885aacd87a1a",
+        "order": 3,
+        "width": 1,
+        "height": 1
+    },
+    {
+        "id": "12ebe8aed30c3228",
+        "type": "ui_spacer",
+        "z": "58479f4b10d10829",
+        "name": "spacer",
+        "group": "61b0885aacd87a1a",
+        "order": 4,
+        "width": 1,
+        "height": 1
+    },
+    {
+        "id": "476432c4ddeb3de6",
+        "type": "ui_spacer",
+        "z": "58479f4b10d10829",
+        "name": "spacer",
+        "group": "61b0885aacd87a1a",
+        "order": 5,
+        "width": 1,
+        "height": 1
+    },
+    {
+        "id": "33658762d66765fe",
+        "type": "ui_spacer",
+        "z": "58479f4b10d10829",
+        "name": "spacer",
+        "group": "61b0885aacd87a1a",
+        "order": 6,
+        "width": 1,
+        "height": 1
+    },
+    {
+        "id": "a14861635b9b2e43",
+        "type": "ui_spacer",
+        "z": "58479f4b10d10829",
+        "name": "spacer",
+        "group": "61b0885aacd87a1a",
+        "order": 8,
+        "width": 1,
+        "height": 1
+    },
+    {
+        "id": "033210eb5037bcca",
+        "type": "ui_spacer",
+        "z": "58479f4b10d10829",
+        "name": "spacer",
+        "group": "61b0885aacd87a1a",
+        "order": 9,
+        "width": 1,
+        "height": 1
+    },
+    {
+        "id": "5a1ec086d6432c9c",
+        "type": "ui_spacer",
+        "z": "58479f4b10d10829",
+        "name": "spacer",
+        "group": "61b0885aacd87a1a",
+        "order": 10,
+        "width": 1,
+        "height": 1
+    },
+    {
+        "id": "20cce61a7bef453b",
+        "type": "ui_spacer",
+        "z": "58479f4b10d10829",
+        "name": "spacer",
+        "group": "61b0885aacd87a1a",
+        "order": 11,
+        "width": 1,
+        "height": 1
+    },
+    {
+        "id": "f119494c2f140587",
+        "type": "ui_spacer",
+        "z": "58479f4b10d10829",
+        "name": "spacer",
+        "group": "61b0885aacd87a1a",
+        "order": 13,
+        "width": 1,
+        "height": 1
+    },
+    {
+        "id": "fb40cf9ecb629585",
+        "type": "ui_spacer",
+        "z": "58479f4b10d10829",
+        "name": "spacer",
+        "group": "61b0885aacd87a1a",
+        "order": 14,
+        "width": 1,
+        "height": 1
+    },
+    {
+        "id": "3aa8a5d2f946341f",
+        "type": "ui_spacer",
+        "z": "58479f4b10d10829",
+        "name": "spacer",
+        "group": "61b0885aacd87a1a",
+        "order": 15,
+        "width": 1,
+        "height": 1
+    },
+    {
+        "id": "65196983ccd465ce",
+        "type": "mqtt-broker",
+        "name": "Mosquitto",
+        "broker": "test.mosquitto.org",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "4478e5a5c88821a9",
+        "type": "ui_group",
+        "name": "Sensibilidad",
+        "tab": "f39de061131522bf",
+        "order": 2,
+        "disp": true,
+        "width": 6,
+        "collapse": true,
+        "className": ""
+    },
+    {
+        "id": "6999a5aa06ee14cd",
+        "type": "ui_group",
+        "name": "Botones",
+        "tab": "f39de061131522bf",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": true,
+        "className": ""
+    },
+    {
+        "id": "61b0885aacd87a1a",
+        "type": "ui_group",
+        "name": "Estado de los pedales",
+        "tab": "f39de061131522bf",
+        "order": 3,
+        "disp": true,
+        "width": 6,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "f39de061131522bf",
+        "type": "ui_tab",
+        "name": "Pedal Adaptativo",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    }
+]
